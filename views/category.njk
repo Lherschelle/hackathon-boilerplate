@@ -1,0 +1,82 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% extends "./layout.njk" %}
+
+{% block pageTitle %}
+  What do you want to do?
+{% endblock %}
+
+{% block beforeContent %}
+  {{
+    govukBackLink({
+      text: "Back",
+      href: "/"
+    })
+  }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{
+          govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [
+              {
+              text: "Select an option",
+              href: "#category"
+              }
+          ]
+          })
+        }}
+      {% endif %}
+      <form method="POST">
+        {{
+          govukRadios({
+            name: "category",
+            fieldset: {
+              legend: {
+                text: "What do you want to do?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
+            items: [
+              {
+                value: "question",
+                text: "Ask a question"
+              },
+              {
+                value: "FOI",
+                text: "Freedom of information request"
+              },
+              {
+                value: "disclose",
+                text: "Disclose in the public interest (including whistelblowing)"
+              },
+              {
+                value: "comment",
+                text: "Comment"
+              },
+              {
+                value: "complaint",
+                text: "Raise a complaint"
+              }
+            ],
+            errorMessage : {
+                text: errors.category
+            } if errors.category else null
+          })
+        }}
+        {{
+          govukButton({
+            text: "Save and continue"
+          })
+        }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

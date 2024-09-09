@@ -1,0 +1,115 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+  Freedom of information request
+{% endblock %}
+
+{% block beforeContent %}
+  {{
+    govukBackLink({
+      text: "Back",
+      href: '/category'
+    })
+  }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Summary</h1>
+      {{
+        govukSummaryList({
+          rows: [
+            {
+              key: {
+                text: "What do you want to do?"
+              },
+              value: {
+                text: "Freedom of information request"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "name"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "First name"
+              },
+              value: {
+                text: formValues.firstName
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "first name"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "Last name"
+              },
+              value: {
+                text: formValues.lastName
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "last name"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "Enquiry topic"
+              },
+              value: {
+                html: formValues.about
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "enquiry topic"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "Enquiry"
+              },
+              value: {
+                html: formValues.enquiry
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "enquiry topic"
+                  }
+                ]
+              }
+            }
+          ]
+        })
+      }}
+    </div>
+  </div>
+{% endblock %}

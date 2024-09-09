@@ -1,0 +1,98 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+  Freedom of information request
+{% endblock %}
+
+{% block beforeContent %}
+  {{
+    govukBackLink({
+      text: "Back",
+      href: "/category"
+    })
+  }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{
+          govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [
+              {
+              text: errors.email,
+              href: "#email"
+              }
+          ]
+          })
+        }}
+      {% endif %}
+
+      <form method="POST" novalidate>
+        {%
+          call govukFieldset({
+            legend: {
+              text: "Your information",
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          })
+        %}
+
+          {{
+            govukInput({
+              label: {
+                text: "First name"
+              },
+              id: "first-name",
+              name: "firstName",
+              value: formValues.firstName if formValues.firstName else null,
+              autocomplete: "given-name"
+            })
+          }}
+
+          {{
+            govukInput({
+              label: {
+                text: "Last name"
+              },
+              id: "last-name",
+              name: "lastName",
+              value: formValues.lastName if formValues.lastName else null,
+              autocomplete: "family-name"
+            })
+          }}
+
+          {{
+            govukInput({
+              label: {
+                text: "Email address"
+              },
+              id: "email",
+              name: "email",
+              type: "email",
+              autocomplete: "email",
+              spellcheck: false,
+              value: formValues.emailAddress if formValues.emailAddress else null,
+              errorMessage: {
+                text: errors.email
+              } if errors.email
+            })
+          }}
+        {% endcall %}
+        {{
+          govukButton({
+            text: "Save and continue"
+          })
+        }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

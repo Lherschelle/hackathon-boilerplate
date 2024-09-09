@@ -1,0 +1,91 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+  Freedom of information request
+{% endblock %}
+
+{% block beforeContent %}
+  {{
+    govukBackLink({
+      text: "Back",
+      href: backString
+    })
+  }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{
+          govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [
+              {
+              text: errors.about,
+              href: "#about"
+              } if errors.about else null,
+              {
+              text: errors.enquiry,
+              href: "#enquiry"
+              } if errors.enquiry else null
+          ]
+          })
+        }}
+      {% endif %}
+
+      <form method="POST" novalidate>
+        {%
+          call govukFieldset({
+            legend: {
+              text: "Enquiry information",
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          })
+        %}
+
+          {{
+            govukInput({
+              label: {
+                text: "What is your enquiry about?"
+              },
+              id: "about",
+              name: "about",
+              value: formValues.about if formValues.about else null,
+              errorMessage:  { text: errors.about } if errors.about else null
+            })
+          }}
+
+          {{
+            govukTextarea({
+              name: "enquiry",
+              id: "enquiry",
+              label: {
+                text: "What is your enquiry?"
+
+              },
+              hint: {
+                text: "Provide as much detail as possible to help us answer your enquiry"
+              },
+              value: formValues.enquiry if formValues.enquiry else null,
+              errorMessage:  { text: errors.enquiry } if errors.enquiry else null
+            })
+          }}
+        {% endcall %}
+
+        {{
+          govukButton({
+            text: "Save and continue"
+          })
+        }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

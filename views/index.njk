@@ -1,0 +1,32 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% extends "./layout.njk" %}
+
+{% block pageTitle %}
+  DHSC Prototype
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">DHSC Prototype</h1>
+      <p class="govuk-body-l">
+        This is a prototype for Department of Health and Social Care services
+        developed by Hitachi Solutions.
+      </p>
+      {{
+        govukDetails({
+          summaryText: "Service Information",
+          text: "You can use this service to get in touch with the for Department of Health and Social Care."
+        })
+      }}
+      {{
+        govukButton({
+        text: "Start now",
+        href: "/category",
+        isStartButton: true
+        })
+      }}
+    </div>
+  </div>
+{% endblock %}

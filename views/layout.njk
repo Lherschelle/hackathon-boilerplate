@@ -1,0 +1,25 @@
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+{% extends "govuk/template.njk" %}
+
+{% block head %}
+  <link rel="stylesheet" href="/stylesheets/govuk-frontend.min.css" />
+{% endblock %}
+
+{% block header %}
+  {{
+    govukHeader({
+        homepageUrl: "https://www.gov.uk/",
+        containerClasses: "govuk-width-container",
+        serviceName: 'DHSC Prototype',
+        serviceUrl: "/"
+    })
+  }}
+{% endblock %}
+
+{% block bodyEnd %}
+  <script type="module" src="/javascripts/govuk-frontend.min.js"></script>
+  <script type="module">
+    import { initAll } from "/javascripts/govuk-frontend.min.js";
+    initAll();
+  </script>
+{% endblock %}
