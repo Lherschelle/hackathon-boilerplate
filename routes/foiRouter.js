@@ -6,7 +6,7 @@ const { generateReferenceNumber, validateEmail } = require("../utils");
 foiRouter.get("/:id/contact", async (req, res) => {
   const foi = await FOI.findByPk(req.params.id);
 
-  if (!foi) {
+  if (!foi || foi.reference) {
     return res.redirect("404");
   }
 
@@ -18,17 +18,15 @@ foiRouter.get("/:id/contact", async (req, res) => {
 foiRouter.post("/:id/contact", async (req, res) => {
   const foi = await FOI.findByPk(req.params.id);
 
-  if (!foi) {
+  if (!foi || foi.reference) {
     return res.redirect("404");
   }
 
   let errors = {};
   const formValues = { ...req.body };
 
-  console.log(validateEmail(req.body.email));
-
-  if (!validateEmail(req.body.email)) {
-    errors.email =
+  if (!validateEmail(req.body.emailAddress)) {
+    errors.emailAddress =
       "Enter an email address in the correct format, like name@example.com";
 
     return res.render("FOI/contact", {
@@ -40,7 +38,7 @@ foiRouter.post("/:id/contact", async (req, res) => {
   await foi.update({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    emailAddress: req.body.email,
+    emailAddress: req.body.emailAddress,
   });
 
   if (req.query.check === "true") {
@@ -53,7 +51,7 @@ foiRouter.post("/:id/contact", async (req, res) => {
 foiRouter.get("/:id/details", async (req, res, next) => {
   const foi = await FOI.findByPk(req.params.id);
 
-  if (!foi) {
+  if (!foi || foi.reference) {
     return res.redirect("404");
   }
 
@@ -66,7 +64,7 @@ foiRouter.get("/:id/details", async (req, res, next) => {
 foiRouter.post("/:id/details", async (req, res) => {
   const foi = await FOI.findByPk(req.params.id);
 
-  if (!foi) {
+  if (!foi || foi.reference) {
     return res.redirect("404");
   }
 
@@ -74,11 +72,11 @@ foiRouter.post("/:id/details", async (req, res) => {
   const formValues = { ...req.body };
 
   if (!req.body.about) {
-    errors.about = "Enter what your enquiry is about";
+    errors.about = "Enter what your request is about";
   }
 
   if (!req.body.enquiry) {
-    errors.enquiry = "Enter your enquiry";
+    errors.enquiry = "Enter the details of your request";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -99,7 +97,7 @@ foiRouter.post("/:id/details", async (req, res) => {
 foiRouter.get("/:id/summary", async (req, res) => {
   const foi = await FOI.findByPk(req.params.id);
 
-  if (!foi) {
+  if (!foi || foi.reference) {
     return res.redirect("404");
   }
 
@@ -115,7 +113,7 @@ foiRouter.post("/:id/summary", async (req, res) => {
   {
     const foi = await FOI.findByPk(req.params.id);
 
-    if (!foi) {
+    if (!foi || foi.reference) {
       return res.redirect("404");
     }
 
@@ -123,6 +121,24 @@ foiRouter.post("/:id/summary", async (req, res) => {
     if (!req.body.confirmationEmail) {
       errors.confirmationEmail = "Select an option";
 
+      return res.render("FOI/summary", {
+        errors: errors,
+        formValues: { ...foi.dataValues },
+        backUrl: `/FOI/${foi.id}/details`,
+        changeContactUrl: `/FOI/${foi.id}/contact?check=true`,
+        changeDetailsUrl: `/FOI/${foi.id}/details?check=true`,
+      });
+    }
+
+    if (
+      !foi.firstName ||
+      !foi.lastName ||
+      !foi.emailAddress ||
+      !foi.about ||
+      !foi.enquiry
+    ) {
+      errors.incompleteEnquiry =
+        "You must complete all sections to submit your enquiry";
       return res.render("FOI/summary", {
         errors: errors,
         formValues: { ...foi.dataValues },
@@ -153,8 +169,6 @@ foiRouter.get("/:id/confirmation", async (req, res) => {
   if (!foi) {
     return res.redirect("404");
   }
-
-  console.log(foi.dataValues);
 
   return res.render("FOI/confirmation", {
     reference: foi.reference,

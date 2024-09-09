@@ -44,7 +44,7 @@
         {%
           call govukFieldset({
             legend: {
-              text: "Enquiry information",
+              text: "Details about your freedom of information (FOI) request",
               classes: "govuk-fieldset__legend--l",
               isPageHeading: true
             }
@@ -54,7 +54,7 @@
           {{
             govukInput({
               label: {
-                text: "What is your enquiry about?"
+                text: "What is your freedom of information request about?"
               },
               id: "about",
               name: "about",
@@ -68,11 +68,11 @@
               name: "enquiry",
               id: "enquiry",
               label: {
-                text: "What is your enquiry?"
+                text: "What is your freedom of information request?"
 
               },
               hint: {
-                text: "Provide as much detail as possible to help us answer your enquiry"
+                text: "Provide as much detail as possible to help answer your request"
               },
               value: formValues.enquiry if formValues.enquiry else null,
               errorMessage:  { text: errors.enquiry } if errors.enquiry else null

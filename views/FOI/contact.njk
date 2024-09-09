@@ -27,8 +27,8 @@
           titleText: "There is a problem",
           errorList: [
               {
-              text: errors.email,
-              href: "#email"
+              text: errors.emailAddress,
+              href: "#email-address"
               }
           ]
           })
@@ -75,15 +75,15 @@
               label: {
                 text: "Email address"
               },
-              id: "email",
-              name: "email",
+              id: "email-address",
+              name: "emailAddress",
               type: "email",
               autocomplete: "email",
               spellcheck: false,
-              value: formValues.email if formValues.email else null,
+              value: formValues.emailAddress if formValues.emailAddress else null,
               errorMessage: {
-                text: errors.email
-              } if errors.email
+                text: errors.emailAddress
+              } if errors.emailAddress
             })
           }}
         {% endcall %}

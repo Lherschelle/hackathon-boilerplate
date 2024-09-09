@@ -3,9 +3,6 @@
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-
-
-
 {% extends "../layout.njk" %}
 
 {% block pageTitle %}
@@ -32,7 +29,11 @@
               {
               text: "Select an option",
               href: "#confirmationEmail"
-              }
+              } if errors.confirmationEmail else null,
+              {
+                text: errors.incompleteEnquiry,
+                href: '#'
+              } if errors.incompleteEnquiry else null
           ]
           })
         }}
@@ -94,6 +95,23 @@
             },
             {
               key: {
+                text: "Email address"
+              },
+              value: {
+                text: formValues.emailAddress
+              },
+              actions: {
+                items: [
+                  {
+                    href: changeContactUrl,
+                    text: "Change",
+                    visuallyHiddenText: "email address"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
                 text: "Enquiry topic"
               },
               value: {
@@ -130,7 +148,8 @@
         })
       }}
       <form method="POST">
-        {{ govukRadios({
+        {{
+          govukRadios({
           name: "confirmationEmail",
           fieldset: {
             legend: {
@@ -148,9 +167,10 @@
             }
           ],
           errorMessage: { text: errors.confirmationEmail } if errors.confirmationEmail else null
-          }) }}
+          })
+        }}
 
-           {{
+        {{
           govukButton({
             text: "Submit"
           })
