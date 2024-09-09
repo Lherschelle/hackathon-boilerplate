@@ -1,6 +1,7 @@
 const express = require("express");
 const foiRouter = express.Router({ mergeParams: true });
 const { FOI } = require("../models/models");
+const { generateReferenceNumber } = require("../utils");
 
 foiRouter.get("/:id/contact", async (req, res) => {
   const foi = await FOI.findByPk(req.params.id);
@@ -40,6 +41,10 @@ foiRouter.post("/:id/contact", async (req, res) => {
     emailAddress: req.body.email,
   });
 
+  if (req.query.check === "true") {
+    return res.redirect(`/FOI/${foi.id}/summary`);
+  }
+
   return res.redirect(`/FOI/${foi.id}/details`);
 });
 
@@ -52,7 +57,7 @@ foiRouter.get("/:id/details", async (req, res, next) => {
 
   return res.render("FOI/details", {
     formValues: { ...foi.dataValues },
-    backString: `/FOI/${foi.id}/contact`,
+    backUrl: `/FOI/${foi.id}/contact`,
   });
 });
 
@@ -98,7 +103,47 @@ foiRouter.get("/:id/summary", async (req, res) => {
 
   return res.render("FOI/summary", {
     formValues: { ...foi.dataValues },
-    backString: `/FOI/${foi.id}/details`,
+    backUrl: `/FOI/${foi.id}/details`,
+    changeContactUrl: `/FOI/${foi.id}/contact?check=true`,
+    changeDetailsUrl: `/FOI/${foi.id}/details?check=true`,
+  });
+});
+
+foiRouter.post("/:id/summary", async (req, res) => {
+  {
+    const foi = await FOI.findByPk(req.params.id);
+
+    if (!foi) {
+      return res.redirect("404");
+    }
+
+    if (req.body.confirmationEmail === "yes") {
+      await foi.update({
+        reference: generateReferenceNumber(),
+        confirmationEmailSent: true,
+      });
+    } else {
+      await foi.update({
+        reference: generateReferenceNumber(),
+      });
+    }
+
+    return res.redirect(`/FOI/${foi.id}/confirmation`);
+  }
+});
+
+foiRouter.get("/:id/confirmation", async (req, res) => {
+  const foi = await FOI.findByPk(req.params.id);
+
+  if (!foi) {
+    return res.redirect("404");
+  }
+
+  console.log(foi.dataValues);
+
+  return res.render("FOI/confirmation", {
+    reference: foi.reference,
+    confirmationEmailSent: foi.confirmationEmailSent,
   });
 });
 

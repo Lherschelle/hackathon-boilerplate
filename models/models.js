@@ -13,6 +13,8 @@ FOI.init(
     emailAddress: DataTypes.STRING,
     about: DataTypes.STRING,
     enquiry: DataTypes.STRING,
+    reference: DataTypes.STRING,
+    confirmationEmailSent: DataTypes.BOOLEAN,
   },
   { sequelize, modelName: "FOI" },
 );
