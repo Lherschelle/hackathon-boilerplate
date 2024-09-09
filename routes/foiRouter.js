@@ -1,7 +1,7 @@
 const express = require("express");
 const foiRouter = express.Router({ mergeParams: true });
 const { FOI } = require("../models/models");
-const { generateReferenceNumber } = require("../utils");
+const { generateReferenceNumber, validateEmail } = require("../utils");
 
 foiRouter.get("/:id/contact", async (req, res) => {
   const foi = await FOI.findByPk(req.params.id);
@@ -25,7 +25,9 @@ foiRouter.post("/:id/contact", async (req, res) => {
   let errors = {};
   const formValues = { ...req.body };
 
-  if (!req.body.email) {
+  console.log(validateEmail(req.body.email));
+
+  if (!validateEmail(req.body.email)) {
     errors.email =
       "Enter an email address in the correct format, like name@example.com";
 
@@ -115,6 +117,19 @@ foiRouter.post("/:id/summary", async (req, res) => {
 
     if (!foi) {
       return res.redirect("404");
+    }
+
+    let errors = {};
+    if (!req.body.confirmationEmail) {
+      errors.confirmationEmail = "Select an option";
+
+      return res.render("FOI/summary", {
+        errors: errors,
+        formValues: { ...foi.dataValues },
+        backUrl: `/FOI/${foi.id}/details`,
+        changeContactUrl: `/FOI/${foi.id}/contact?check=true`,
+        changeDetailsUrl: `/FOI/${foi.id}/details?check=true`,
+      });
     }
 
     if (req.body.confirmationEmail === "yes") {
