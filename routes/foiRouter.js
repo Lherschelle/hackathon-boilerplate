@@ -32,7 +32,7 @@ foiRouter.post("/:id/contact", async (req, res) => {
     return res.render("FOI/contact", {
       errors: errors,
       formValues: formValues,
-    });
+});
   }
 
   await foi.update({
